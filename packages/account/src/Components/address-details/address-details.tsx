@@ -239,7 +239,7 @@ const AddressDetails = ({
                                                     ? localize('Town/City*')
                                                     : localize('Town/City')
                                             }
-                                            placeholder={localize('Town/City')}
+                                            placeholder={localize('Town')}
                                             disabled={
                                                 disabled_items.includes('address_city') ||
                                                 (props.value?.address_city && has_real_account)
