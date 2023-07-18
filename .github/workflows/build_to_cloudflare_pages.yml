@@ -26,7 +26,7 @@ jobs:
         id: restore_dependencies
         uses: actions/cache/restore@v3
         with:
-          key: key: node-v${{ env.CACHE_VERSION }}-${{ hashFiles('CACHE_KEY1') }}
+          key: node-v${{ env.CACHE_VERSION }}-${{ hashFiles('CACHE_KEY1') }}
           path: |
               "node_modules"
               "packages/api/node_modules"
