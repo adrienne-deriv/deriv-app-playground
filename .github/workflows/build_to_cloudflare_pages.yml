@@ -1,0 +1,121 @@
+name: Build to Cloudflare Pages
+
+permissions: write-all
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+    
+env:
+   CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+   CLOUDFLARE_ACCOUNT_ID: ${{ secrets.ACCOUNT_ID }}
+
+jobs:
+  build_to_cloudflare_pages:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout to repo
+        uses: actions/checkout@v3
+        ref: "$GITHUB_HEAD_REF"
+        
+      - name: Setup node
+        uses: actions/setup-node@v2
+
+
+      - name: Restore cached dependencies
+        id: restore_dependencies
+        uses: actions/cache/restore@v3
+        with:
+          key: key: node-v${{ env.CACHE_VERSION }}-${{ hashFiles('CACHE_KEY1') }}
+          path: |
+              "node_modules"
+              "packages/api/node_modules"
+              "packages/account/node_modules"
+              "packages/appstore/node_modules"
+              "packages/bot-skeleton/node_modules"
+              "packages/bot-web-ui/node_modules"
+              "packages/cashier/node_modules"
+              "packages/components/node_modules"
+              "packages/core/node_modules"
+              "packages/hooks/node_modules"
+              "packages/cfd/node_modules"
+              "packages/indicators/node_modules"
+              "packages/p2p/node_modules"
+              "packages/reports/node_modules"
+              "packages/shared/node_modules"
+              "packages/stores/node_modules"
+              "packages/trader/node_modules"
+              "packages/translations/node_modules"
+              "packages/utils/node_modules"
+              "packages/analytics/node_modules"
+
+
+      - name: Install dependencies
+        if: ${{ steps.restore_dependencies.outputs.cache-hit != 'true' }}
+        run: npm run bootstrap
+
+      - name: Cache dependencies
+        uses: actions/cache/save@v3
+        with:
+          key: node-v${{ env.CACHE_VERSION }}-${{ hashFiles('CACHE_KEY1') }}
+          path: |
+              "node_modules"
+              "packages/api/node_modules"
+              "packages/account/node_modules"
+              "packages/appstore/node_modules"
+              "packages/bot-skeleton/node_modules"
+              "packages/bot-web-ui/node_modules"
+              "packages/cashier/node_modules"
+              "packages/components/node_modules"
+              "packages/core/node_modules"
+              "packages/hooks/node_modules"
+              "packages/cfd/node_modules"
+              "packages/indicators/node_modules"
+              "packages/p2p/node_modules"
+              "packages/reports/node_modules"
+              "packages/shared/node_modules"
+              "packages/stores/node_modules"
+              "packages/trader/node_modules"
+              "packages/translations/node_modules"
+              "packages/utils/node_modules"
+              "packages/analytics/node_modules"
+      
+      - name: Build project
+        run: npm run build:all
+        
+      - name: Publish to Cloudflare Pages
+        id: publish_to_pages
+        run: |
+          echo "Installing Wrangler CLI"
+          npm i -g wrangler
+          
+          echo "Deploying build to Cloudflare Pages"
+          directory="$(git rev-parse --show-toplevel)/packages/core/dist"
+          projectName='deriv-app-playground'
+          branch=$GITHUB_HEAD_REF
+          preview_url=$(wrangler pages deploy $directory --project-name=$projectName --branch=$branch | grep -o 'https://[^\"]*.pages.dev')
+          
+          echo "Retrieving preview URL"
+          echo "preview_url=$preview_url" >> "$GITHUB_OUTPUT"
+        
+      - name: Retrieve Cloudflare Pages Preview URL
+        id: vercel_preview_url
+        uses: actions/github-script@v3
+        with:
+          script: |
+            const preview_url = ${{ steps.publish_to_pages.outputs.preview_url }} 
+
+            const comment = [
+              '| Name | Result |',
+              '| :--- | :------ |',
+              `| **Preview URL**  | [Visit Preview](${preview_url}) |`,
+              ''
+            ].join('\n')
+            core.setOutput("comment", comment);
+
+      - name: Post Cloudflare Pages Preview comment
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: Vercel Preview Comment
+          number: ${{github.event.issue.number}}
+          message: ${{steps.vercel_preview_url.outputs.comment}}
