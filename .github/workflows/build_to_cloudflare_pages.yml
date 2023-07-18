@@ -16,7 +16,8 @@ jobs:
     steps:
       - name: Checkout to repo
         uses: actions/checkout@v3
-        ref: "$GITHUB_HEAD_REF"
+        with:
+          ref: "$GITHUB_HEAD_REF"
         
       - name: Setup node
         uses: actions/setup-node@v2
