@@ -43,7 +43,7 @@ jobs:
 
           echo "Downloading messages.json from Crowdin for comparison"
           cd $(git rev-parse --show-toplevel)/packages/translations
-          crowdin download sources -T ${{ secrets.CROWDIN_API_KEY }}
+          crowdin download sources -T ${{ secrets.CROWDIN_API_KEY }} -i ${{ secrets.CROWDIN_PROJECT_ID }}
           crowdin_messages_json_hash="$(git hash-object messages.json)"
           echo "- [crowdin]: message.json hash is $crowdin_messages_json_hash"
           rm messages.json 
@@ -56,7 +56,7 @@ jobs:
 
           echo "Downloading messages.json from Crowdin for comparison"
           cd $(git rev-parse --show-toplevel)/packages/p2p
-          crowdin download sources -T ${{ secrets.CROWDIN_API_KEY }}
+          crowdin download sources -T ${{ secrets.CROWDIN_API_KEY }} -i ${{ secrets.CROWDIN_PROJECT_ID }}
           crowdin_p2p_messages_json_hash="$(git hash-object messages.json)"
           echo "- [crowdin]: message.json hash is $crowdin_p2p_messages_json_hash"
           rm messages.json 
@@ -80,12 +80,7 @@ jobs:
           # Download latest translations from Crowdin
           cd $(git rev-parse --show-toplevel)/packages/translations
           echo "Attempting to download updated translations from Crowdin"
-          crowdin download -T ${{ secrets.CROWDIN_API_KEY }}
-
-          # Download latest translations from Crowdin in p2p
-          cd $(git rev-parse --show-toplevel)/packages/p2p
-          echo "Attempting to download updated translations from Crowdin"
-          crowdin download -T ${{ secrets.CROWDIN_API_KEY }}
+          crowdin download -T ${{ secrets.CROWDIN_API_KEY }} -i ${{ secrets.CROWDIN_PROJECT_ID }}
 
           if [ -z "$(git status --porcelain)" ]; then
             echo "Found no new translation files that need to be merged with master. Not creating a PR."
