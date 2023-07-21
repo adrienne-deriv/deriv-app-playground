@@ -30,6 +30,7 @@ jobs:
 
           echo "Installing Crowdin CLI and bootstrapping project"
           sudo npm i -g @crowdin/cli
+          npm run bootstrap
 
           echo "Checking out new branch [$branch_name]"
           git checkout -b "$branch_name"
