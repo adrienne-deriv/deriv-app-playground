@@ -13,6 +13,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        
+      - name: Checkout to translations package
+        run: |
+            cd $(git rev-parse --show-toplevel)/packages/translations
 
       - name: Download translations 
         id: download_translations
