@@ -20,6 +20,8 @@ jobs:
         with:
           download_translations: true
           upload_sources: false
+          push_sources: false
+          push_translations: false
           create_pull_request: true
           pull_request_title: 'New Crowdin Translations'
           pull_request_body: 'New Crowdin translations by [Crowdin GH Action](https://github.com/crowdin/github-action)'
