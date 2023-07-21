@@ -1,0 +1,32 @@
+name: 'Update translations from Crowdin'
+
+on:
+  workflow_dispatch:
+  repository_dispatch:
+    types:
+      - file-fully-reviewed
+
+jobs:
+  synchronize-with-crowdin:
+    if: github.repository == 'binary-com/deriv-app'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Download translations 
+        id: download_translations
+        uses: crowdin/github-action@1.5.1
+        with:
+          download_translations: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
+          CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
+
+      - name: Log translations
+        run: |
+          echo "${{ github.event.client_payload.file }}"
+
+      
