@@ -8,7 +8,6 @@ on:
 
 jobs:
   synchronize-with-crowdin:
-    if: github.repository == 'binary-com/deriv-app'
     runs-on: ubuntu-latest
 
     steps:
