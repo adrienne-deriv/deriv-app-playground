@@ -37,32 +37,29 @@ jobs:
           directory="$(git rev-parse --show-toplevel)/packages/core/dist"
           projectName='deriv-app-playground'
           branch=$GITHUB_HEAD_REF
-          preview_url=$(wrangler pages deploy $directory --project-name=$projectName --branch=$branch > log.txt 2>&1; echo $?)
-          
-          echo "THIS IS THE ERROR"
-          cat log.txt
+          preview_url=$(wrangler pages deploy $directory --project-name=$projectName --branch=$branch | grep -o 'https://[^\"]*.pages.dev')
           
           echo "Retrieving preview URL"
           echo "preview_url=$preview_url" >> "$GITHUB_OUTPUT"
         
-#       - name: Retrieve Cloudflare Pages Preview URL
-#         id: vercel_preview_url
-#         uses: actions/github-script@v3
-#         with:
-#           script: |
-#             const preview_url = ${{ steps.publish_to_pages.outputs.preview_url }} 
+      - name: Retrieve Cloudflare Pages Preview URL
+        id: vercel_preview_url
+        uses: actions/github-script@v3
+        with:
+          script: |
+            const preview_url = ${{ steps.publish_to_pages.outputs.preview_url }} 
 
-#             const comment = [
-#               '| Name | Result |',
-#               '| :--- | :------ |',
-#               `| **Preview URL**  | [Visit Preview](${preview_url}) |`,
-#               ''
-#             ].join('\n')
-#             core.setOutput("comment", comment);
+            const comment = [
+              '| Name | Result |',
+              '| :--- | :------ |',
+              `| **Preview URL**  | [Visit Preview](${preview_url}) |`,
+              ''
+            ].join('\n')
+            core.setOutput("comment", comment);
 
-#       - name: Post Cloudflare Pages Preview comment
-#         uses: marocchino/sticky-pull-request-comment@v2
-#         with:
-#           header: Vercel Preview Comment
-#           number: ${{github.event.issue.number}}
-#           message: ${{steps.vercel_preview_url.outputs.comment}}
+      - name: Post Cloudflare Pages Preview comment
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: Vercel Preview Comment
+          number: ${{github.event.issue.number}}
+          message: ${{steps.vercel_preview_url.outputs.comment}}
