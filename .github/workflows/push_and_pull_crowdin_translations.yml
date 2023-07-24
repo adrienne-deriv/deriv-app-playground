@@ -13,10 +13,6 @@ on:
   repository_dispatch:
     types:
       - file-fully-reviewed
-  
-concurrency:
-  group: ${{ github.ref }}
-  cancel-in-progress: true
 
 jobs:
   push_and_pull_crowdin_translations:
