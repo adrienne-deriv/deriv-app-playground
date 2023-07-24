@@ -75,5 +75,5 @@ jobs:
             gh pr create --fill --base "master" --head "adrienne-deriv:$branch_name"
           fi
           
-          echo "Notifying translations team"
-          curl -X POST -H 'Content-type: application/json' --data '{"text":"Paimon just updated the translations branch with the approved translations!. Paimon thinks we should double-check them :paimoncool:."}' ${{ secrets.PAIMON_SLACK_WEBHOOK }}
+          echo "Notifying translations team in Slack"
+          curl -X POST -H 'Content-type: application/json' --data '{"text":"Paimon just updated the translations pull request branch with the approved strings! Here are the updated languages:\n- Indonesian\n Paimon thinks you can check it out <|here>."}' ${{ secrets.PAIMON_SLACK_WEBHOOK }}
