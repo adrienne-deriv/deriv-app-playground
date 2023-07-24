@@ -16,7 +16,6 @@ on:
 
 jobs:
   push_and_pull_crowdin_translations:
-    if: github.repository == 'binary-com/deriv-app'
     runs-on: ubuntu-latest
     strategy:
       matrix:
