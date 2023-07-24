@@ -13,6 +13,8 @@ on:
   repository_dispatch:
     types:
       - file-fully-reviewed
+  
+concurrency: update-translations
 
 jobs:
   push_and_pull_crowdin_translations:
