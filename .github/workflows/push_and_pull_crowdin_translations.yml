@@ -14,7 +14,9 @@ on:
     types:
       - file-fully-reviewed
   
-concurrency: update-translations
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   push_and_pull_crowdin_translations:
