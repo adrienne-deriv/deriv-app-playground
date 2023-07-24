@@ -80,4 +80,4 @@ jobs:
           fi
           
           echo "Notifying translations team"
-          curl -X POST -H 'Content-type: application/json' --data '{"text":"Paimon has updated the translations branch with the approved translations!"}' ${{ secrets.PAIMON_SLACK_WEBHOOK }}
+          curl -X POST -H 'Content-type: application/json' --data '{"text":"Paimon just updated the translations branch with the approved translations!. Paimon thinks we should double-check them :paimoncool:."}' ${{ secrets.PAIMON_SLACK_WEBHOOK }}
