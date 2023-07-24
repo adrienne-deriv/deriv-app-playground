@@ -10,7 +10,7 @@
 ### Add
 
 ```sh
-lerna exec --scope @deriv/[Package] -- npm install [Package] --save
+lerna exec --scope @deriv/[Package] -- npm install [Package] --saveasdasdasdff
 ```
 
 For example
