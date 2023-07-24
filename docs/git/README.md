@@ -10,7 +10,7 @@ You should at least set your name and email address correctly. As commits are co
 
 You typically configure your global username and email address after installing Git. However, you can do so now if you missed that step or want to make changes. After you set your global configuration, repository-specific configuration is optional.
 
-Git configuration works the same across Windows, macOS, and Linux and KURUKURUU.
+Git configuration works the same across Windows, macOS, and Linux and KURUKURU.
 
 ##### To set your global username/email configuration:
 
