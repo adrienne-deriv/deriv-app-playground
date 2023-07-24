@@ -78,3 +78,6 @@ jobs:
             # TODO (from me): Update the --head back to "binary-com:$branch-name"
             gh pr create --fill --base "master" --head "adrienne-deriv:$branch_name"
           fi
+          
+          echo "Notifying translations team"
+          curl -X POST -H 'Content-type: application/json' --data '{"text":"Paimon has updated the translations branch with the approved translations!"}' ${{ secrets.PAIMON_SLACK_WEBHOOK }}
