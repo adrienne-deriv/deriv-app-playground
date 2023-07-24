@@ -5,10 +5,6 @@ permissions: write-all
 on:
   pull_request:
     types: [opened, synchronize]
-    
-env:
-   CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-   CLOUDFLARE_ACCOUNT_ID: ${{ secrets.ACCOUNT_ID }}
 
 jobs:
   build_to_cloudflare_pages:
