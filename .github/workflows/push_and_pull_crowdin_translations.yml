@@ -53,7 +53,7 @@ jobs:
           # Download latest translations from Crowdin
           cd $(git rev-parse --show-toplevel)/packages/translations
           echo "Attempting to download updated translations from Crowdin"
-          crowdin download -T ${{ secrets.CROWDIN_API_KEY }} -i $ {{ secrets.CROWDIN_PROJECT_ID }}
+          crowdin download -T "${{ secrets.CROWDIN_API_KEY }}" -i $ "{{ secrets.CROWDIN_PROJECT_ID }}"
 
           if [ -z "$(git status --porcelain)" ]; then
             echo "Found no new translation files that need to be merged with master. Not creating a PR."
