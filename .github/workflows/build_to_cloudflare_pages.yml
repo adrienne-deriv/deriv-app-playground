@@ -82,7 +82,7 @@ jobs:
               "packages/analytics/node_modules"
       
       - name: Build project
-        run: npm run build:all
+        run: npm run build:prod
         
       - name: Publish to Cloudflare Pages
         id: publish_to_pages
