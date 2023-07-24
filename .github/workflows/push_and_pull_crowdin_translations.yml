@@ -13,6 +13,10 @@ on:
   repository_dispatch:
     types:
       - file-fully-reviewed
+  
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   push_and_pull_crowdin_translations:
@@ -53,7 +57,7 @@ jobs:
           # Download latest translations from Crowdin
           cd $(git rev-parse --show-toplevel)/packages/translations
           echo "Attempting to download updated translations from Crowdin"
-          crowdin download -T "${{ secrets.CROWDIN_API_KEY }}" -i $ "{{ secrets.CROWDIN_PROJECT_ID }}"
+          crowdin download -T "${{ secrets.CROWDIN_API_KEY }}" -i "${{ secrets.CROWDIN_PROJECT_ID }}"
 
           if [ -z "$(git status --porcelain)" ]; then
             echo "Found no new translation files that need to be merged with master. Not creating a PR."
@@ -74,3 +78,6 @@ jobs:
             # TODO (from me): Update the --head back to "binary-com:$branch-name"
             gh pr create --fill --base "master" --head "adrienne-deriv:$branch_name"
           fi
+          
+          echo "Notifying translations team"
+          curl -X POST -H 'Content-type: application/json' --data '{"text":"Paimon has updated the translations branch with the approved translations!"}' ${{ secrets.PAIMON_SLACK_WEBHOOK }}
