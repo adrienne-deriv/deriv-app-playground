@@ -91,7 +91,7 @@ jobs:
           npm i -g wrangler
           
           echo "Deploying build to Cloudflare Pages"
-          directory="$(git rev-parse --show-toplevel)/packages/core/dist"
+          directory="packages/core/dist"
           projectName='deriv-app-playground'
           branch=$GITHUB_HEAD_REF
           preview_url=$(wrangler pages deploy $directory --project-name=$projectName --branch=$branch | grep -o 'https://[^\"]*.pages.dev')
