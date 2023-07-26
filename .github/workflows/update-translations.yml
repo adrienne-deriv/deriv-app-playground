@@ -107,12 +107,17 @@ jobs:
             git commit -m "translations: 📚 sync translations with crowdin"
 
             # Force push to this branch in case a previous run created it.
+            echo "Updating $branch_name branch with the updated translations..."
             git push --set-upstream origin "$branch_name" -f
 
             sudo apt install gh
             gh auth login --with-token <<< ${{ github.token }}
             # gh pr close "$branch_name" || true
-            gh pr create --fill --base "master" --head "adrienne-deriv:$branch_name"
+            
+            if ! gh pr list --head "$branch_name" --state open | grep -q "$branch"; then
+              echo "Translations pull request has not been created yet, creating one..."
+              gh pr create --fill --base "master" --head "adrienne-deriv:$branch_name"
+            fi
           fi
 
 
