@@ -1,5 +1,14 @@
 name: 'Update translations from Crowdin'
 
+permissions:
+  actions: write
+  checks: write
+  contents: write
+  deployments: write
+  pull-requests: write
+  statuses: write
+  
+  
 on:
   repository_dispatch:
     types:
