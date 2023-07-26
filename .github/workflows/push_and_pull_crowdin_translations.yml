@@ -1,79 +1,79 @@
-name: Push and pull Crowdin translations
+# name: Push and pull Crowdin translations
 
-permissions:
-  actions: write
-  checks: write
-  contents: write
-  deployments: write
-  pull-requests: write
-  statuses: write
+# permissions:
+#   actions: write
+#   checks: write
+#   contents: write
+#   deployments: write
+#   pull-requests: write
+#   statuses: write
   
-on:
-  workflow_dispatch:
-  repository_dispatch:
-    types:
-      - file-fully-reviewed
+# on:
+#   workflow_dispatch:
+#   repository_dispatch:
+#     types:
+#       - file-fully-reviewed
 
-jobs:
-  push_and_pull_crowdin_translations:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [18.x]
-    steps:
-      - name: Setup node
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node-version }}
+# jobs:
+#   push_and_pull_crowdin_translations:
+#     runs-on: ubuntu-latest
+#     strategy:
+#       matrix:
+#         node-version: [18.x]
+#     steps:
+#       - name: Setup node
+#         uses: actions/setup-node@v2
+#         with:
+#           node-version: ${{ matrix.node-version }}
 
-      # We checkout the master branch so we can run the translations
-      # script on the latest changes.
-      - name: Checkout master branch
-        uses: actions/checkout@v2.3.4
+#       # We checkout the master branch so we can run the translations
+#       # script on the latest changes.
+#       - name: Checkout master branch
+#         uses: actions/checkout@v2.3.4
 
-      # In this step we're doing a couple things:
-      # - We generate a new messages.json
-      # - We hash the newly generated messages.json and compare it with the messages.json on Crowdin.
-      # - We download the latest translation files from Crowdin, if there are new files, we create a PR.
-      - name: Generate and push to Crowdin
-        run: |
-          branch_name="deriv_app_translations"
+#       # In this step we're doing a couple things:
+#       # - We generate a new messages.json
+#       # - We hash the newly generated messages.json and compare it with the messages.json on Crowdin.
+#       # - We download the latest translation files from Crowdin, if there are new files, we create a PR.
+#       - name: Generate and push to Crowdin
+#         run: |
+#           branch_name="deriv_app_translations"
 
-          echo "Setting up Git identity"
-          git config --global user.name "test"
-          git config --global user.email "test@users.noreply.github.com"
+#           echo "Setting up Git identity"
+#           git config --global user.name "test"
+#           git config --global user.email "test@users.noreply.github.com"
 
-          echo "Installing Crowdin CLI and bootstrapping project"
-          sudo npm i -g @crowdin/cli
-          npm run bootstrap
+#           echo "Installing Crowdin CLI and bootstrapping project"
+#           sudo npm i -g @crowdin/cli
+#           npm run bootstrap
 
-          echo "Checking out new branch [$branch_name]"
-          git checkout -b "$branch_name"
+#           echo "Checking out new branch [$branch_name]"
+#           git checkout -b "$branch_name"
 
-          # Download latest translations from Crowdin
-          cd $(git rev-parse --show-toplevel)/packages/translations
-          echo "Attempting to download updated translations from Crowdin"
-          crowdin download -T "${{ secrets.CROWDIN_API_KEY }}" -i "${{ secrets.CROWDIN_PROJECT_ID }}"
+#           # Download latest translations from Crowdin
+#           cd $(git rev-parse --show-toplevel)/packages/translations
+#           echo "Attempting to download updated translations from Crowdin"
+#           crowdin download -T "${{ secrets.CROWDIN_API_KEY }}" -i "${{ secrets.CROWDIN_PROJECT_ID }}"
 
-          if [ -z "$(git status --porcelain)" ]; then
-            echo "Found no new translation files that need to be merged with master. Not creating a PR."
-          else
-            echo "Found updated translation files that need to be merged with master. Creating a PR."
+#           if [ -z "$(git status --porcelain)" ]; then
+#             echo "Found no new translation files that need to be merged with master. Not creating a PR."
+#           else
+#             echo "Found updated translation files that need to be merged with master. Creating a PR."
 
-            # Commit the newly downloaded files
-            cd $(git rev-parse --show-toplevel)
-            git add .
-            git commit -m "translations: 📚 sync translations with crowdin"
+#             # Commit the newly downloaded files
+#             cd $(git rev-parse --show-toplevel)
+#             git add .
+#             git commit -m "translations: 📚 sync translations with crowdin"
 
-            # Force push to this branch in case a previous run created it.
-            git push --set-upstream origin "$branch_name" -f
+#             # Force push to this branch in case a previous run created it.
+#             git push --set-upstream origin "$branch_name" -f
 
-            sudo apt install gh
-            gh auth login --with-token <<< ${{ github.token }}
-            gh pr close "$branch_name" || true
-            # TODO (from me): Update the --head back to "binary-com:$branch-name"
-            gh pr create --fill --base "master" --head "adrienne-deriv:$branch_name"
-          fi
+#             sudo apt install gh
+#             gh auth login --with-token <<< ${{ github.token }}
+#             gh pr close "$branch_name" || true
+#             # TODO (from me): Update the --head back to "binary-com:$branch-name"
+#             gh pr create --fill --base "master" --head "adrienne-deriv:$branch_name"
+#           fi
           
-          echo "Notifying translations team in Slack"
-          curl -X POST -H 'Content-type: application/json' --data '{"text":"Paimon just updated the translations pull request branch with the approved strings! Here are the updated languages:\n- Indonesian\n Paimon thinks you can check it out <|here>."}' ${{ secrets.PAIMON_SLACK_WEBHOOK }}
+#           echo "Notifying translations team in Slack"
+#           curl -X POST -H 'Content-type: application/json' --data '{"text":"Paimon just updated the translations pull request branch with the approved strings! Here are the updated languages:\n- Indonesian\n Paimon thinks you can check it out <|here>."}' ${{ secrets.PAIMON_SLACK_WEBHOOK }}
