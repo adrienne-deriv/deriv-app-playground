@@ -24,10 +24,8 @@ jobs:
       - name: Get cached dependencies
         id: cache_npm
         uses: actions/cache@v3
-        env:
-          cache-name: cache-node-modules
         with:
-          key: ${{ runner.os }}-build-${{ steps.generate_cache_key.outputs.cache_key1 }}
+          key: translations-build-${{ steps.generate_cache_key.outputs.cache_key1 }}
           path: |
               node_modules
               packages/account/node_modules
