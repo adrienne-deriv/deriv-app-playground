@@ -28,13 +28,19 @@ jobs:
             env:
               GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             
+#           - name: Capture test link URL
+#             if: ${{ fromJSON(steps.fetch_pull_request.outputs.data).head.ref == 'deriv_app_translations' }}
+#             id: test_link_url
+#             uses: binary-com/vercel-preview-url-action@v1.0.5
+#             with:
+#                 GITHUB_TOKEN: ${{ github.token }}
+#                 preview_url_regexp: \[Visit Preview\]\((.*?.pages.dev)\)
+
           - name: Capture test link URL
             if: ${{ fromJSON(steps.fetch_pull_request.outputs.data).head.ref == 'deriv_app_translations' }}
             id: test_link_url
-            uses: binary-com/vercel-preview-url-action@v1.0.5
-            with:
-                GITHUB_TOKEN: ${{ github.token }}
-                preview_url_regexp: \[Visit Preview\]\((.*?.pages.dev)\)
+            run: |
+              echo "vercel_preview_url=https://lol.deriv-com-playground.pages.dev" > "$GITHUB_OUTPUT"
 
           - name: Send Slack message to translations team
             if: ${{ fromJSON(steps.fetch_pull_request.outputs.data).head.ref == 'deriv_app_translations' }}
