@@ -12,37 +12,24 @@ on:
     issue_comment:
         types: [edited]
 
-jobs:
-    test:
-      timeout-minutes: 5
-      runs-on: ubuntu-latest
-      steps:
-        - name: Print
-          run: |
-            echo "${{ github.event.issue.pull_request.url }}"
-            echo "${{ github.event.issue.pull_request.title }}"
-            echo "${{ github.event.issue.pull_request.head_ref }}"
-            echo "${{ github.ref_name }}"
-            echo "${{ github.head_ref}}"
-            echo "${{ github.ref }}"
-            
-        - uses: octokit/request-action@v2.x
-          id: get_latest_release
-          with:
-            route: GET ${{ github.event.issue.pull_request.url }}
-            owner: adrienne-deriv
-            repo: deriv-app-playground
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            
-        - run: "echo latest release: '${{ fromJSON(steps.get_latest_release.outputs.data).head.ref }}'"
-        
+jobs:        
     generate_app_id:
-        if: ${{ github.event.issue.pull_request && github.ref_name == 'deriv_app_translations' }}
+        if: ${{ github.event.issue.pull_request }}
         timeout-minutes: 5
         runs-on: ubuntu-latest
         steps:
+          - name: Fetch pull request
+            uses: octokit/request-action@v2.x
+            id: fetch_pull_request
+            with:
+              route: GET ${{ github.event.issue.pull_request.url }}
+              owner: adrienne-deriv
+              repo: deriv-app-playground
+            env:
+              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            
           - name: Capture test link URL
+            if: ${{ fromJSON(steps.fetch_pull_request.outputs.data).head.ref == 'deriv_app_translations' }}
             id: test_link_url
             uses: binary-com/vercel-preview-url-action@v1.0.5
             with:
@@ -50,12 +37,13 @@ jobs:
                 preview_url_regexp: \[Visit Preview\]\((.*?.pages.dev)\)
 
           - name: Send Slack message to translations team
+            if: ${{ fromJSON(steps.fetch_pull_request.outputs.data).head.ref == 'deriv_app_translations' }}
             run: |
               if [ -n "${{ secrets.SLACK_TRANSLATIONS_TEAM_WEBHOOK }}" ]; then
                   echo "Sending message to Slack (#team_translations)"
 
                   project="${{ github.event.client_payload.project.name }}"
-                  pull_request="https://github.com/${{ github.repository }}/pull/${{ github.event.issue.pull_request.number }}"
+                  pull_request="${{ fromJSON(steps.fetch_pull_request.outputs.data).html_url }}"
                   updated_language="${{ github.event.client_payload.targetLanguage.name }}"
 
                   content="Paimon noticed that there was an update in Crowdin for a language, here are the details of the changes:\n"
