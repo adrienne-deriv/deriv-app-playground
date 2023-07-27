@@ -25,6 +25,18 @@ jobs:
             echo "${{ github.ref_name }}"
             echo "${{ github.head_ref}}"
             echo "${{ github.ref }}"
+            
+        - uses: octokit/request-action@v2.x
+          id: get_latest_release
+          with:
+            route: GET ${{ github.event.issue.pull_request.url }}
+            owner: adrienne-deriv
+            repo: deriv-app-playground
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            
+        - run: "echo latest release: '${{ steps.get_latest_release.outputs.data }}'"
+        
     generate_app_id:
         if: ${{ github.event.issue.pull_request && github.ref_name == 'deriv_app_translations' }}
         timeout-minutes: 5
