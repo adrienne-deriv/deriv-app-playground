@@ -120,6 +120,7 @@ jobs:
 
                 project="${{ github.event.client_payload.project.name }}"
                 pull_request_id=$(gh pr list --head "$branch_name" --state open | grep 'prettier' | awk '{print $1}' | sed 's/#//')
+                gh pr list --head "$branch_name" --state open
                 pull_request="https://github.com/$GITHUB_ACTOR/$GITHUB_REPOSITORY/pull/$pull_request_id"
                 updated_language="${{ github.event.client_payload.targetLanguage.name }}"
 
