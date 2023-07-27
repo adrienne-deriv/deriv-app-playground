@@ -60,5 +60,5 @@ jobs:
                   fi
                   content+="**Updated language**: $updated_language"
                   echo "$content"
-                  curl -X POST -H 'Content-type: application/json' --data "{"text": "Paimon noticed that there was an update in Crowdin for a language, here are the details of the changes: $project" }" ${{ secrets.SLACK_TRANSLATIONS_TEAM_WEBHOOK }}
+                  curl -X POST -H 'Content-type: application/json' --data '{"text": "Paimon noticed that there was an update in Crowdin for a language, here are the details of the changes:\nProject:asd" }' ${{ secrets.SLACK_TRANSLATIONS_TEAM_WEBHOOK }}
               fi
