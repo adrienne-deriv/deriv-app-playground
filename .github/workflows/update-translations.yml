@@ -121,7 +121,8 @@ jobs:
                 project="${{ github.event.client_payload.project.name }}"
                 pull_request_id=$(gh pr list --head "$branch_name" --state open | grep "$branch_name" | awk '{print $1}' | sed 's/#//')
                 echo $(gh pr list --head "$branch_name" --state open)
-                echo "WHERREEEE $pull_request_id"
+                echo "WHERREEEE $GITHUB_OWNER"
+                echo "$GITHUB_ACTOR"
                 pull_request="https://github.com/$GITHUB_ACTOR/$GITHUB_REPOSITORY/pull/$pull_request_id"
                 updated_language="${{ github.event.client_payload.targetLanguage.name }}"
 
