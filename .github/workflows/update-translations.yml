@@ -109,7 +109,7 @@ jobs:
             gh auth login --with-token <<< ${{ github.token }}
             # gh pr close "$branch_name" || true
             
-            if ! gh pr list --head "$branch_name" --state open | grep -q "$branch"; then
+            if ! gh pr list --head "$branch_name" --state open | grep -q "$branch_name"; then
               echo "Translations pull request has not been created yet, creating one..."
               gh pr create --fill --base "master" --head "adrienne-deriv:$branch_name"
             fi
@@ -121,6 +121,7 @@ jobs:
                 project="${{ github.event.client_payload.project.name }}"
                 pull_request_id=$(gh pr list --head "$branch_name" --state open | grep 'prettier' | awk '{print $1}' | sed 's/#//')
                 echo $(gh pr list --head "$branch_name" --state open)
+                echo "WHERREEEE $pull_request_id"
                 pull_request="https://github.com/$GITHUB_ACTOR/$GITHUB_REPOSITORY/pull/$pull_request_id"
                 updated_language="${{ github.event.client_payload.targetLanguage.name }}"
 
