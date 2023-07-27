@@ -58,6 +58,6 @@ jobs:
                   if [ -n "${{ steps.test_link_url.outputs.vercel_preview_url }}" ]; then
                     content+="Test Link: ${{ steps.test_link_url.outputs.vercel_preview_url }}\n"
                   fi
-                  content+="**Updated language**: $updated_language"
+                  content+="Updated language: $updated_language"
                   curl -X POST -H 'Content-type: application/json' --data "{\"text\": \"$content\" }" ${{ secrets.SLACK_TRANSLATIONS_TEAM_WEBHOOK }}
               fi
