@@ -1,63 +1,63 @@
-name: Notify translations team in Slack
+# name: Notify translations team in Slack
 
-permissions:
-  actions: write
-  checks: write
-  contents: write
-  deployments: write
-  pull-requests: write
-  statuses: write
+# permissions:
+#   actions: write
+#   checks: write
+#   contents: write
+#   deployments: write
+#   pull-requests: write
+#   statuses: write
 
-on:
-    issue_comment:
-        types: [edited]
+# on:
+#     issue_comment:
+#         types: [edited]
 
-jobs:        
-    generate_app_id:
-        if: ${{ github.event.issue.pull_request }}
-        timeout-minutes: 5
-        runs-on: ubuntu-latest
-        steps:
-          - name: Fetch pull request
-            uses: octokit/request-action@v2.x
-            id: fetch_pull_request
-            with:
-              route: GET ${{ github.event.issue.pull_request.url }}
-              owner: adrienne-deriv
-              repo: deriv-app-playground
-            env:
-              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+# jobs:        
+#     generate_app_id:
+#         if: ${{ github.event.issue.pull_request }}
+#         timeout-minutes: 5
+#         runs-on: ubuntu-latest
+#         steps:
+#           - name: Fetch pull request
+#             uses: octokit/request-action@v2.x
+#             id: fetch_pull_request
+#             with:
+#               route: GET ${{ github.event.issue.pull_request.url }}
+#               owner: adrienne-deriv
+#               repo: deriv-app-playground
+#             env:
+#               GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             
+# #           - name: Capture test link URL
+# #             if: ${{ fromJSON(steps.fetch_pull_request.outputs.data).head.ref == 'deriv_app_translations' }}
+# #             id: test_link_url
+# #             uses: binary-com/vercel-preview-url-action@v1.0.5
+# #             with:
+# #                 GITHUB_TOKEN: ${{ github.token }}
+# #                 preview_url_regexp: \[Visit Preview\]\((.*?.pages.dev)\)
+
 #           - name: Capture test link URL
 #             if: ${{ fromJSON(steps.fetch_pull_request.outputs.data).head.ref == 'deriv_app_translations' }}
 #             id: test_link_url
-#             uses: binary-com/vercel-preview-url-action@v1.0.5
-#             with:
-#                 GITHUB_TOKEN: ${{ github.token }}
-#                 preview_url_regexp: \[Visit Preview\]\((.*?.pages.dev)\)
+#             run: |
+#               echo "vercel_preview_url=https://lol.deriv-com-playground.pages.dev" > "$GITHUB_OUTPUT"
 
-          - name: Capture test link URL
-            if: ${{ fromJSON(steps.fetch_pull_request.outputs.data).head.ref == 'deriv_app_translations' }}
-            id: test_link_url
-            run: |
-              echo "vercel_preview_url=https://lol.deriv-com-playground.pages.dev" > "$GITHUB_OUTPUT"
+#           - name: Send Slack message to translations team
+#             if: ${{ fromJSON(steps.fetch_pull_request.outputs.data).head.ref == 'deriv_app_translations' }}
+#             run: |
+#               if [ -n "${{ secrets.SLACK_TRANSLATIONS_TEAM_WEBHOOK }}" ]; then
+#                   echo "Sending message to Slack (#team_translations)"
 
-          - name: Send Slack message to translations team
-            if: ${{ fromJSON(steps.fetch_pull_request.outputs.data).head.ref == 'deriv_app_translations' }}
-            run: |
-              if [ -n "${{ secrets.SLACK_TRANSLATIONS_TEAM_WEBHOOK }}" ]; then
-                  echo "Sending message to Slack (#team_translations)"
+#                   project="${{ github.event.client_payload.project.name }}"
+#                   pull_request="${{ fromJSON(steps.fetch_pull_request.outputs.data).html_url }}"
+#                   updated_language="${{ github.event.client_payload.targetLanguage.name }}"
 
-                  project="${{ github.event.client_payload.project.name }}"
-                  pull_request="${{ fromJSON(steps.fetch_pull_request.outputs.data).html_url }}"
-                  updated_language="${{ github.event.client_payload.targetLanguage.name }}"
-
-                  content="Paimon noticed that there was an update in Crowdin for a language, here are the details of the changes:\n"
-                  content+="Project: $project\n"
-                  content+="Pull Request: $pull_request\n"
-                  if [ -n "${{ steps.test_link_url.outputs.vercel_preview_url }}" ]; then
-                    content+="Test Link: ${{ steps.test_link_url.outputs.vercel_preview_url }}\n"
-                  fi
-                  content+="Updated language: $updated_language"
-                  curl -X POST -H 'Content-type: application/json' --data "{\"text\": \"$content\" }" ${{ secrets.SLACK_TRANSLATIONS_TEAM_WEBHOOK }}
-              fi
+#                   content="Paimon noticed that there was an update in Crowdin for a language, here are the details of the changes:\n"
+#                   content+="Project: $project\n"
+#                   content+="Pull Request: $pull_request\n"
+#                   if [ -n "${{ steps.test_link_url.outputs.vercel_preview_url }}" ]; then
+#                     content+="Test Link: ${{ steps.test_link_url.outputs.vercel_preview_url }}\n"
+#                   fi
+#                   content+="Updated language: $updated_language"
+#                   curl -X POST -H 'Content-type: application/json' --data "{\"text\": \"$content\" }" ${{ secrets.SLACK_TRANSLATIONS_TEAM_WEBHOOK }}
+#               fi
