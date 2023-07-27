@@ -53,12 +53,11 @@ jobs:
                   updated_language="${{ github.event.client_payload.targetLanguage.name }}"
 
                   content="Paimon noticed that there was an update in Crowdin for a language, here are the details of the changes:\n"
-                  content+="**Project**: $project\n"
-                  content+="**Pull Request**: $pull_request\n"
+                  content+="Project: $project\n"
+                  content+="Pull Request: $pull_request\n"
                   if [ -n "${{ steps.test_link_url.outputs.vercel_preview_url }}" ]; then
-                    content+="**Test Link**: ${{ steps.test_link_url.outputs.vercel_preview_url }}\n"
+                    content+="Test Link: ${{ steps.test_link_url.outputs.vercel_preview_url }}\n"
                   fi
                   content+="**Updated language**: $updated_language"
-                  echo "$content"
                   curl -X POST -H 'Content-type: application/json' --data "{\"text\": \"$content\" }" ${{ secrets.SLACK_TRANSLATIONS_TEAM_WEBHOOK }}
               fi
