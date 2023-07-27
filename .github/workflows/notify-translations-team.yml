@@ -19,12 +19,12 @@ jobs:
       steps:
         - name: Print
           run: |
-            echo "${{ github.event.issue.pull_request.name }}"
+            echo "${{ github.event.issue.pull_request.url }}"
             echo "${{ github.event.issue.pull_request.title }}"
             echo "${{ github.event.issue.pull_request.head_ref }}"
             echo "${{ github.ref_name }}"
             echo "${{ github.head_ref}}"
-            echo "${{ github.ref}}"
+            echo "${{ github.ref }}"
     generate_app_id:
         if: ${{ github.event.issue.pull_request && github.ref_name == 'deriv_app_translations' }}
         timeout-minutes: 5
