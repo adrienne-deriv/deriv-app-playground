@@ -19,7 +19,9 @@ jobs:
       steps:
         - name: Print
           run: |
-            echo "${{ github.event.issue.pull_request }}"
+            echo "${{ github.event.issue.pull_request.name }}"
+            echo "${{ github.event.issue.pull_request.title }}"
+            echo "${{ github.event.issue.pull_request.head_ref }}"
             echo "${{ github.ref_name }}"
             echo "${{ github.head_ref}}"
             echo "${{ github.ref}}"
