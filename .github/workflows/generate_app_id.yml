@@ -60,6 +60,16 @@ jobs:
                         - **App ID**: `${{ steps.generate_app_id.outputs.app_id }}`
                         ```
                       </details>
+                      
+            - name: Notify translations team
+              if: ${{ github.ref_name == "deriv_app_translations" }}
+              run: |
+                content="The test link has been generated for the pull request containing the updated translations:\n"
+                content+="Pull Request: ${{ steps.generate_app_id.outputs.pr_url }}\n"
+                content+="Test Link: ${{ steps.vercel_preview_url.outputs.vercel_preview_url }}\n"
+                content+="App ID: ${{ steps.generate_app_id.outputs.app_id }}"
+                
+                curl -X POST -H 'Content-type: application/json' --data "{\"text\": \"$content\" }" ${{ secrets.SLACK_TRANSLATIONS_TEAM_WEBHOOK }}
 
             - name: Store generated URL in artifact
               run: echo "HOME_URL=${{ steps.vercel_preview_url.outputs.vercel_preview_url }}?qa_server=red.binaryws.com&app_id=${{ steps.generate_app_id.outputs.app_id }}" >> ${{ github.workspace }}/url.txt
