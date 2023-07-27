@@ -14,7 +14,7 @@ on:
 
 jobs:
     generate_app_id:
-        if: ${{ github.event.issue.pull_request && github.ref_name == "deriv_app_translations" }}
+        if: ${{ github.event.issue.pull_request && github.ref_name == 'deriv_app_translations' }}
         timeout-minutes: 5
         runs-on: ubuntu-latest
         steps:
