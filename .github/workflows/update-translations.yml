@@ -70,12 +70,11 @@ jobs:
           git config --global user.name "DerivFE"
           git config --global user.email "80095553+DerivFE@users.noreply.github.com"
 
-          echo "Checking out new branch [$branch_name]"
           if [ -z "$(git ls-remote --heads origin refs/heads/$branch_name)" ]; then
             echo "Found no translations branch, creating the translations branch $branch_name."
             git checkout -b "$branch_name"
           else
-            echo "Found translations branch $branch_name"
+            echo "Found translations branch, checking out to the translations branch $branch_name"
             git fetch origin "$branch_name"
             git checkout "$branch_name" -f
           fi
