@@ -32,7 +32,7 @@ jobs:
                 
                       
             - name: Notify translations team
-              if: ${{ github.ref_name == "deriv_app_translations_2" }}
+              if: ${{ github.ref_name == 'deriv_app_translations_2' }}
               run: |
                 content="Paimon has retrieved the generated test link for the updated translations:\n"
                 content+=":paperclip: *Pull Request*: ${{ steps.generate_app_id.outputs.pr_url }}\n"
