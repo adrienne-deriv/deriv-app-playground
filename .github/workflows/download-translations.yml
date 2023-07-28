@@ -114,7 +114,10 @@ jobs:
             # Check if the translations branch has already created the pull request
             if ! gh pr list --head "$branch_name" --state open | grep -q "$branch_name"; then
               echo "Translations pull request has not been created yet, creating one..."
-              gh pr create --title "translations: 📚 sync translations on crowdin webhook trigger" --body "Synchronized approved translation files based on the Crowdin webhook trigger." --base "master" --head "adrienne-deriv:$branch_name"
+              
+              pr_title="translations: 📚 sync translations on crowdin webhook trigger"
+              pr_body="Synchronized approved translation files based on the Crowdin webhook trigger."
+              gh pr create --title $pr_title --body $pr_body --base "master" --head "adrienne-deriv:$branch_name"
             fi
             
             if [ -n "${{ secrets.SLACK_TRANSLATIONS_TEAM_WEBHOOK }}" ]; then
