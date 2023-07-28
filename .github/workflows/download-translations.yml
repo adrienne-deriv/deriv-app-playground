@@ -13,7 +13,11 @@ on:
   repository_dispatch:
     types:
       - file-fully-reviewed
-
+      
+concurrency:
+  group: download-translations-crowdin
+  cancel-in-progress: true
+  
 jobs:
   synchronize-with-crowdin:
     runs-on: ubuntu-latest
