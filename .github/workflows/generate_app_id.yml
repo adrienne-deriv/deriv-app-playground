@@ -30,7 +30,28 @@ jobs:
               id: generate_app_id
               run: |
                 pr_url="https://github.com/adrienne-deriv/deriv-app-playground/pull/17"
+                app_id="123"
                 echo "pr_url=$pr_url" > $GITHUB_OUTPUT
+                
+            - name: Find Slack user
+              id: find-slack-user
+              uses: scribd/find-slack-user-action@v1
+              with:
+                slack-token: ${{ secrets.SLACK_API_TOKEN }}
+
+            - name: Post to a Slack channel
+              uses: slackapi/slack-github-action@v1.24.0
+              with:
+                channel-id: ${{ steps.find-slack-user.outputs.member-id }}
+                slack-message: |
+                    Paimon has retrieved the test link for your recent pull request:
+                    - *PR*: ${{ steps.generate_app_id.outputs.pr_url }}
+                    - *URLs*:
+                        - *w/ App ID + Server*: ${{ steps.vercel_preview_url.outputs.vercel_preview_url }}?qa_server=red.binaryws.com&app_id=${{ steps.generate_app_id.outputs.app_id }}
+                        - *Original*: ${{ steps.vercel_preview_url.outputs.vercel_preview_url }}
+                    - *App ID*: ${{ steps.generate_app_id.outputs.app_id }}
+              env:
+                SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
                 
   
             - name: Retrieve pull request head branch
