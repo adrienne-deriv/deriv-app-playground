@@ -22,11 +22,6 @@ jobs:
               run: |
                 pull_request="https://lol.deriv-com-playground.pages.dev/"
                 echo "vercel_preview_url=$pull_request" > $GITHUB_OUTPUT
-                
-#               uses: binary-com/vercel-preview-url-action@v1.0.5
-#               with:
-#                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#                   preview_url_regexp: \[Visit Preview\]\((.*?.pages.dev)\)
                   
             - name: Generate Deriv App ID for deployment Preview URL
               id: generate_app_id
@@ -35,59 +30,15 @@ jobs:
                 echo "app_id=123" > $GITHUB_OUTPUT
                 echo "pr_url=$pr_url" > $GITHUB_OUTPUT
                 
-#               uses: binary-com/deriv-app-id-action@v1
-#               with:
-#                   DERIV_API_TOKEN: ${{ secrets.DERIV_API_TOKEN }}
-#                   DERIV_APP_ID: ${{ secrets.DERIV_APP_ID }}
-#                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#                   max_retries: 5
-#                   vercel_preview_url: ${{ steps.vercel_preview_url.outputs.vercel_preview_url }}
-#             - name: Comment on pull request with App ID and URLs
-#               id: sticky_comment_on_pr
-#               if: steps.generate_app_id.outputs.should_post_comment
-#               uses: marocchino/sticky-pull-request-comment@v1
-#               with:
-#                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#                   header: deriv-app-id-action
-#                   number: ${{github.event.issue.number}}
-#                   message: |
-#                       A production App ID was automatically generated for this PR. ([log](https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}))
-
-#                       - **PR**: [${{ steps.generate_app_id.outputs.pr_url }}](${{ steps.generate_app_id.outputs.pr_url }})
-#                       - **URLs**:
-#                           - **w/ App ID + Server**: ${{ steps.vercel_preview_url.outputs.vercel_preview_url }}?qa_server=red.binaryws.com&app_id=${{ steps.generate_app_id.outputs.app_id }}
-#                           - **Original**: ${{ steps.vercel_preview_url.outputs.vercel_preview_url }}
-#                       - **App ID**: `${{ steps.generate_app_id.outputs.app_id }}`
-
-#                       <details>
-#                         <summary>Click here to copy & paste above information.</summary>
-
-#                         ```
-#                         - **PR**: [${{ steps.generate_app_id.outputs.pr_url }}](${{ steps.generate_app_id.outputs.pr_url }})
-#                         - **URLs**:
-#                             - **w/ App ID + Server**: ${{ steps.vercel_preview_url.outputs.vercel_preview_url }}?qa_server=red.binaryws.com&app_id=${{ steps.generate_app_id.outputs.app_id }}
-#                             - **Original**: ${{ steps.vercel_preview_url.outputs.vercel_preview_url }}
-#                         - **App ID**: `${{ steps.generate_app_id.outputs.app_id }}`
-#                         ```
-#                       </details>
                       
             - name: Notify translations team
-              if: ${{ github.ref_name == "deriv_app_translations" }}
+              if: ${{ github.ref_name == "deriv_app_translations_2" }}
               run: |
                 content="Paimon has retrieved the generated test link for the updated translations:\n"
                 content+=":paperclip: *Pull Request*: ${{ steps.generate_app_id.outputs.pr_url }}\n"
                 content+=":link: *Test Link*: ${{ steps.vercel_preview_url.outputs.vercel_preview_url }}\n"
                 content+=":id: *App ID*: ${{ steps.generate_app_id.outputs.app_id }}"
-                
+
                 if [ -n "${{ secrets.SLACK_TRANSLATIONS_TEAM_WEBHOOK }}" ]; then
                   curl -X POST -H 'Content-type: application/json' --data "{\"text\": \"$content\" }" ${{ secrets.SLACK_TRANSLATIONS_TEAM_WEBHOOK }}
                 fi
-
-#             - name: Store generated URL in artifact
-#               run: echo "HOME_URL=${{ steps.vercel_preview_url.outputs.vercel_preview_url }}?qa_server=red.binaryws.com&app_id=${{ steps.generate_app_id.outputs.app_id }}" >> ${{ github.workspace }}/url.txt
-#             - name: Upload artifact
-#               uses: actions/upload-artifact@master
-#               with:
-#                   name: generated_url
-#                   path: ${{ github.workspace }}/url.txt
-#                   retention-days: 1
