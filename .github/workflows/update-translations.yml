@@ -127,10 +127,10 @@ jobs:
                 updated_language="${{ github.event.client_payload.targetLanguage.name }}"
 
                 content="Paimon noticed that there was an update in Crowdin for a language, here are the details of the changes:\n"
-                content+="Project: $project\n"
-                content+="Updated language: $updated_language"
-                content+="Pull Request: $pull_request\n"
-                content+="Paimon will soon post the generated test link for the pull request, hold on tight!"
+                content+=":folder: *Project*: $project\n"
+                content+=":globe_with_meridians: *Updated language*: $updated_language\n"
+                content+=":link: *Pull Request*: $pull_request\n"
+                content+="_Paimon will soon post the generated test link for the pull request, hold on tight!_"
                 curl -X POST -H 'Content-type: application/json' --data "{\"text\": \"$content\" }" ${{ secrets.SLACK_TRANSLATIONS_TEAM_WEBHOOK }}
             fi
           fi
