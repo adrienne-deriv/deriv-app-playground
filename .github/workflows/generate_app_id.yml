@@ -33,11 +33,20 @@ jobs:
                 app_id="123"
                 echo "pr_url=$pr_url" > $GITHUB_OUTPUT
                 
+            - name: Get User Email
+              id: get-email
+              uses: octokit/request-action@v2.x
+              with:
+                route: GET ${{ github.event.issue.pull_request.url }}
+              env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                
             - name: Find Slack user
               id: find-slack-user
               uses: scribd/find-slack-user-action@v1
               with:
                 slack-token: ${{ secrets.SLACK_API_TOKEN }}
+                email: ${{ steps.get-email.outputs.data.user.login }}
 
             - name: Post to a Slack channel
               uses: slackapi/slack-github-action@v1.24.0
