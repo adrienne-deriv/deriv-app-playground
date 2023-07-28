@@ -33,9 +33,13 @@ jobs:
                 echo "app_id=123" > $GITHUB_OUTPUT
                 echo "pr_url=$pr_url" > $GITHUB_OUTPUT
                 
+  
+            - name: Retrieve pull request head branch
+              uses: xt0rted/pull-request-comment-branch@v2
+              id: comment-branch
                       
             - name: Notify translations team
-              if: github.ref_name == 'adrienne-deriv:test_deriv_app_translations_2'
+              if: ${{ steps.comment-branch.outputs.head_ref == 'test_deriv_app_translations_2' }}
               run: |
                 content="Paimon has retrieved the generated test link for the updated translations:\n"
                 content+=":paperclip: *Pull Request*: ${{ steps.generate_app_id.outputs.pr_url }}\n"
