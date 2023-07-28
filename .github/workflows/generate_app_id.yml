@@ -21,6 +21,9 @@ jobs:
               id: vercel_preview_url
               run: |
                 pull_request="https://lol.deriv-com-playground.pages.dev/"
+                echo "${{ github.ref_name }}"
+                echo "${{ github.ref }}"
+                echo "$GITHUB_REF_NAME"
                 echo "vercel_preview_url=$pull_request" > $GITHUB_OUTPUT
                   
             - name: Generate Deriv App ID for deployment Preview URL
