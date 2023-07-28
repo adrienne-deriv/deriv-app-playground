@@ -30,7 +30,6 @@ jobs:
               id: generate_app_id
               run: |
                 pr_url="https://github.com/adrienne-deriv/deriv-app-playground/pull/15"
-                echo "app_id=123" > $GITHUB_OUTPUT
                 echo "pr_url=$pr_url" > $GITHUB_OUTPUT
                 
   
@@ -44,7 +43,7 @@ jobs:
                 content="Paimon has retrieved the generated test link for the updated translations:\n"
                 content+=":paperclip: *Pull Request*: ${{ steps.generate_app_id.outputs.pr_url }}\n"
                 content+=":link: *Test Link*: ${{ steps.vercel_preview_url.outputs.vercel_preview_url }}\n"
-                content+=":id: *App ID*: ${{ steps.generate_app_id.outputs.app_id }}"
+                content+=":id: *App ID*: 123"
 
                 if [ -n "${{ secrets.SLACK_TRANSLATIONS_TEAM_WEBHOOK }}" ]; then
                   curl -X POST -H 'Content-type: application/json' --data "{\"text\": \"$content\" }" ${{ secrets.SLACK_TRANSLATIONS_TEAM_WEBHOOK }}
