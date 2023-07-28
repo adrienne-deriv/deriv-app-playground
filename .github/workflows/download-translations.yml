@@ -117,7 +117,7 @@ jobs:
               
               pr_title="translations: 📚 sync translations on crowdin webhook trigger"
               pr_body="Synchronized approved translation files based on the Crowdin webhook trigger."
-              gh pr create --title $pr_title --body $pr_body --base "master" --head "adrienne-deriv:$branch_name"
+              gh pr create --title "$pr_title" --body "$pr_body" --base "master" --head "adrienne-deriv:$branch_name"
             fi
             
             if [ -n "${{ secrets.SLACK_TRANSLATIONS_TEAM_WEBHOOK }}" ]; then
